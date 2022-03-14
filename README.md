@@ -14,6 +14,9 @@
     <li>sourceAttribute differs even though same repeating row</li>
 </ul>
 <b>Expected behaviour</b>: IDs should be equal (both downcase or not mixed case)
+<p>Eventinfo</p>
+![grafik](https://user-images.githubusercontent.com/44941845/158125936-e69e485a-faf4-4a01-8524-e5e510910af8.png)
+
 <h2>#2 Embedded buttons in rolls called from action buttons don't work</h2>
 <b>Steps to reproduce:</b>
 <ul>
@@ -27,3 +30,5 @@
     <li>Error for missing repeating section attributes shows up</li>
 </ul>
 <b>Expected behaviour</b>: Embedded roll buttons should work in action button rolls too
+<p>Error message</p>
+![grafik](https://user-images.githubusercontent.com/44941845/158125848-36668cb6-f7c0-46b2-8ea7-d4a0345266a2.png)
