@@ -1,0 +1,110 @@
+<div>
+    <div>
+      <input type="text" name="attr_character_name" size="40" value="Name"/>
+    </div>
+    <h1>Bugs</h1>
+    <h2>#1 Action Button and Roll Button eventinfo differs (ID)</h2>
+    <b>Steps to reproduce:</b>
+    <ul>
+        <li>Add repeating row (unless already done)</li>
+        <li>Edit "Field to trigger sheetworker"</li>
+        <li>Eventinfo Sheetworker should contain eventinfo</li>
+        <li>Click action button</li>
+        <li>Eventinfo Action button should contain eventinfo</li>
+        <li>Compare sourceAttribute</li>
+        <li>sourceAttribute differs even though same repeating row</li>
+    </ul>
+    <b>Expected behaviour</b>: IDs should be equal (both downcase or not mixed case)
+    <h2>#2 Embedded buttons in rolls called from action buttons don't work</h2>
+    <b>Steps to reproduce:</b>
+    <ul>
+        <li>Add repeating row (unless already done)</li>
+        <li>Make sure input fields contain content</li>
+        <li>Click Roll button "show eventinfo"</li>
+        <li>Click "click me" button in appeared chat message</li>
+        <li>Embedded roll button working correctly</li>
+        <li>Click action button "show eventinfo"</li>
+        <li>Click "click me" button in appeared chat message</li>
+        <li>Error for missing repeating section attributes shows up</li>
+    </ul>
+    <b>Expected behaviour</b>: Embedded roll buttons should work in action button rolls too
+    <h1>Repeating field section</h1>
+    <fieldset class="repeating_somefield">
+        <div>
+            <div>
+                <label>Roll Button</label>: <button type="roll" name="roll_showeventinfo" value="&{template:embdeddedButtonTemplate} {{tag=Roll Button}} {{embeddedButton=[Click me](~repeating_somefield_show_content)}}">Show eventinfo</button>
+            </div>
+            <hr/>
+            <div>
+                <label>Action Button</label>: <button type="action" name="act_showaction">Show eventinfo</button>
+            </div>
+            <hr/>
+            <div>
+                <label>Embedded Roll Button</label>: <button type="roll" name="roll_show_content" value="&{template:showeventinfo} {{tag=Embedded roll button}} {{trigger=@{trig}}} {{actn=@{onchange}}} {{sheetw=@{sheetworker}}}">Should show attributes</button>
+            </div>
+
+            <hr/>
+        
+            <div>
+                <label>Field to trigger sheetworker</label>: <input type="text" name="attr_trig" placeholder="Change to get sheetworker eventinfo" size="200" />
+            </div>
+            <div>
+                <label>Eventinfo Sheetworker</label> <textarea name="attr_sheetworker"></textarea>
+            </div>
+            <div>
+                <label>Eventinfo Action Button</label> <textarea name="attr_onchange"></textarea>
+            </div>
+        </div>
+    </fieldset>
+    
+</div>
+
+<script type="text/worker">
+    on("sheet:opened", () => {
+        console.log("sheetworker opened")
+    })
+
+    on('change:repeating_somefield:trig', eventinfo => {
+        // save the eventinfo in an attribute to show to the user 
+        const rowId = eventinfo.sourceAttribute.split("_")[2]
+        console.log(eventinfo)
+        setAttrs({ [`repeating_somefield_${rowId}_sheetworker`]: JSON.stringify(eventinfo) })
+
+    })
+
+    on('clicked:repeating_somefield:showaction', eventinfo => {
+        console.log(eventinfo)
+        //need to downcase this
+        const rowId = eventinfo.sourceAttribute.split("_")[2].toLowerCase()
+        startRoll("&{template:embdeddedButtonTemplate} {{tag=Action Button}} {{embeddedButton=[Click me](~repeating_somefield_show_content)}}", (roll) => {
+            finishRoll(roll.rollId, {})
+            setAttrs({ [`repeating_somefield_${rowId}_onchange`]: JSON.stringify(eventinfo) })
+        })
+
+
+    })
+
+
+</script>
+
+<rolltemplate class="sheet-rolltemplate-embdeddedButtonTemplate">
+
+    <h1>{{tag}}</h1>
+    {{embeddedButton}}
+    <hr/>
+</rolltemplate>
+
+<rolltemplate class="sheet-rolltemplate-showeventinfo">
+    
+    <h1>{{tag}}</h1>
+    <div>
+        <b>Sheetworker</b>: {{sheetw}}
+    </div>
+    <div>
+        <b>Actionbutton</b>: {{actn}}
+    </div>
+    <div>
+        <b>Triggerfield</b>: {{trigger}}
+    </div>
+    <hr/>
+</rolltemplate>
