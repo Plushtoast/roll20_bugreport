@@ -18,7 +18,7 @@
 
 ![](https://user-images.githubusercontent.com/44941845/158125936-e69e485a-faf4-4a01-8524-e5e510910af8.png)
 
-<h2>#2 Embedded buttons in rolls called from action buttons don't work</h2>
+<h2>#2 Embedded buttons in rolls called from action buttons inside repeating rows don't work</h2>
 <b>Steps to reproduce:</b>
 <ul>
     <li>Add repeating row (unless already done)</li>
