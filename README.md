@@ -13,7 +13,7 @@
     <li>Compare sourceAttribute</li>
     <li>sourceAttribute differs even though same repeating row</li>
 </ul>
-<b>Expected behaviour</b>: IDs should be equal (both downcase or not mixed case)
+<b>Expected behaviour</b>: IDs should be equal (both downcase or mixed case)
 <p>Eventinfo</p>
 
 ![](https://user-images.githubusercontent.com/44941845/158125936-e69e485a-faf4-4a01-8524-e5e510910af8.png)
