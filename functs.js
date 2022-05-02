@@ -18,3 +18,9 @@ on('clicked:repeating_somefield:showaction', eventinfo => {
 
 
 })
+
+//bug #3 
+on("sheet:opened", () => {
+    console.log("setting default token")
+    setDefaultToken({ "width": 30, "height": 15 })
+})

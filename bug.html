@@ -1,6 +1,7 @@
 <div>
     <div>
-      <input type="text" name="attr_character_name" size="40" value="Name"/>
+        <input type="text" name="attr_character_name" size="40" value="Name" />
+
     </div>
     <h1>Bugs</h1>
     <h2>#1 Action Button and Roll Button eventinfo differs (ID)</h2>
@@ -28,7 +29,21 @@
         <li>Error for missing repeating section attributes shows up</li>
     </ul>
     <b>Expected behaviour</b>: Embedded roll buttons should work in action button rolls too
-    <h1>Repeating field section</h1>
+    <h2>#3 #setDefaultToken() on sheet:open event prevents token change</h2>
+    <p>Changing the token of a character does'nt work if sheet:opened event contains function setDefaultToken() with changed attributes width or height</p>
+    <b>Steps to reproduce:</b>
+    <ul>
+        <li>Create character</li>
+        <li>add avatar to character</li>
+        <li>Save</li>
+        <li>Add a token to the map</li>
+        <li>Set token to character</li>
+        <li>Save</li>
+        <li>Token not saved</li>
+        <li>short video: https://imgur.com/a/KGDLFkz</li>
+    </ul>
+    <b>Expected behaviour</b>: Token should be updated regardless of the setDefaultToken update</h1>
+
     <fieldset class="repeating_somefield">
         <div>
             <div>
@@ -44,7 +59,7 @@
             </div>
 
             <hr/>
-        
+
             <div>
                 <label>Field to trigger sheetworker</label>: <input type="text" name="attr_trig" placeholder="Change to get sheetworker eventinfo" size="200" />
             </div>
@@ -56,35 +71,36 @@
             </div>
         </div>
     </fieldset>
-    
+
 </div>
 
 <script type="text/worker">
-    on("sheet:opened", () => {
-        console.log("sheetworker opened")
-    })
+on("sheet:opened", () => {
+    console.log("sheetworker opened")
+})
 
-    on('change:repeating_somefield:trig', eventinfo => {
-        // save the eventinfo in an attribute to show to the user 
-        const rowId = eventinfo.sourceAttribute.split("_")[2]
-        console.log(eventinfo)
-        setAttrs({ [`repeating_somefield_${rowId}_sheetworker`]: JSON.stringify(eventinfo) })
+on('change:repeating_somefield:trig', eventinfo => {
+    // save the eventinfo in an attribute to show to the user 
+    console.log(eventinfo)
+    setAttrs({ sheetworker: JSON.stringify(eventinfo) })
 
-    })
+})
 
-    on('clicked:repeating_somefield:showaction', eventinfo => {
-        console.log(eventinfo)
-        //need to downcase this
-        const rowId = eventinfo.sourceAttribute.split("_")[2].toLowerCase()
-        startRoll("&{template:embdeddedButtonTemplate} {{tag=Action Button}} {{embeddedButton=[Click me](~repeating_somefield_show_content)}}", (roll) => {
-            finishRoll(roll.rollId, {})
-            setAttrs({ [`repeating_somefield_${rowId}_onchange`]: JSON.stringify(eventinfo) })
-        })
-
-
+on('clicked:repeating_somefield:showaction', eventinfo => {
+    console.log(eventinfo)
+    startRoll("&{template:embdeddedButtonTemplate} {{embeddedButton=[Embedded Button](~embeddedroll)}}", (roll) => {
+        finishRoll(roll.rollId, {})
+        setAttrs({ onchange: JSON.stringify(eventinfo) })
     })
 
 
+})
+
+//bug #3 
+on("sheet:opened", () => {
+    console.log("setting default token")
+    setDefaultToken({ "width": 30, "height": 15 })
+})
 </script>
 
 <rolltemplate class="sheet-rolltemplate-embdeddedButtonTemplate">
@@ -95,7 +111,7 @@
 </rolltemplate>
 
 <rolltemplate class="sheet-rolltemplate-showeventinfo">
-    
+
     <h1>{{tag}}</h1>
     <div>
         <b>Sheetworker</b>: {{sheetw}}
