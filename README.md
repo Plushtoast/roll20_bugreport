@@ -34,3 +34,19 @@
 <p>Error message</p>
 
 ![](https://user-images.githubusercontent.com/44941845/158125848-36668cb6-f7c0-46b2-8ea7-d4a0345266a2.png)
+
+
+<h2>#3 #setDefaultToken() on sheet:open event prevents token change</h2>
+    <p>Changing the token of a character does'nt work if sheet:opened event contains function setDefaultToken() with changed attributes width or height</p>
+    <b>Steps to reproduce:</b>
+    <ul>
+        <li>Create character</li>
+        <li>add avatar to character</li>
+        <li>Save</li>
+        <li>Add a token to the map</li>
+        <li>Set token to character</li>
+        <li>Save</li>
+        <li>Token not saved</li>
+        <li>short video: https://imgur.com/a/KGDLFkz</li>
+    </ul>
+    <b>Expected behaviour</b>: Token should be updated regardless of the setDefaultToken update
